@@ -1,5 +1,5 @@
 # Installation, Setup and Configuration
-## MySQL Installation
+## MySQL Server and MySQL Shell Installation
 Extract MySQL Server binary
 ```
 unzip MySQL-server-8.1-01.zip
