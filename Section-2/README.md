@@ -2,6 +2,8 @@
 ## Demo from MySQL Shell
 Using CRUD
 ```
+mysqlsh
+
 shell.connect('root@localhost:33060');
 
 # Retrieve data from JSON Document
