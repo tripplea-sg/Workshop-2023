@@ -59,5 +59,11 @@ cat /sys/block/sda/queue/scheduler
 ## Setup and Configure Instance 3306
 Create Sandbox Instance 3306
 ```
+sudo systemctl stop mysqld
+sudo systemctl disable mysqld
+mysqlsh -e "dba.deploySandboxInstance(3306)"
+
+## press enter for empty root password
 
 ```
+
