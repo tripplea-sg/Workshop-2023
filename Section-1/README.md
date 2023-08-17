@@ -66,4 +66,38 @@ mysqlsh -e "dba.deploySandboxInstance(3306)"
 ## press enter for empty root password
 
 ```
+Configure MySQL Instance 3306
+```
+mysql -uroot -h::1
 
+set persist_only innodb_redo_log_capacity=8589934592;
+set persist_only innodb_flush_neighbors=2;
+set persist_only innodb_io_capacity=3000;
+set persist_only innodb_io_capacity_max=3000;
+set persist_only innodb_buffer_pool_size=25769803776;
+set persist_only innodb_buffer_pool_instances=12;
+set persist_only innodb_lru_scan_depth=250;
+set persist_only innodb_page_cleaners=12;
+set persist_only innodb_checksum_algorithm=strict_crc32;
+set persist_only binlog_row_image=MINIMAL;
+
+set persist_only innodb_thread_sleep_delay=500; 
+set persist_only innodb_spin_wait_delay=2;
+set persist_only innodb_spin_wait_pause_multiplier=10;
+
+set persist_only sql_generate_invisible_primary_key=on;
+
+restart;
+
+exit;
+```
+Download and install world_x schema/data
+```
+wget http://downloads.mysql.com/docs/world_x-db.zip
+
+unzip world_x-db.zip
+
+mysql -uroot -h::1 < world_x-db/world_x.sql
+
+mysql -uroot -h::1 -e "show databases"
+```
