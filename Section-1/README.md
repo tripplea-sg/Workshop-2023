@@ -16,6 +16,10 @@ Install MySQL Shell
 ```
 sudo yum localinstall -y mysql-shell-commercial-8.1.0-1.1.el8.x86_64.rpm
 ```
+Clean up
+```
+rm $HOME/*.rpm
+```
 ## OS Parameter Tuning
 Edit /etc/fstab using "sudo vi /etc/fstab" and change 
 ```
@@ -70,7 +74,7 @@ Configure MySQL Instance 3306
 ```
 mysql -uroot -h::1
 
-set persist_only innodb_redo_log_capacity=8589934592;
+set persist_only innodb_redo_log_capacity=2147483648;
 set persist_only innodb_flush_neighbors=2;
 set persist_only innodb_io_capacity=3000;
 set persist_only innodb_io_capacity_max=3000;
