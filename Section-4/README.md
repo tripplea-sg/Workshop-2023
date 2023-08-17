@@ -57,12 +57,15 @@ mysqlsh gradmin:grpass@localhost:3306 -- dba rebootClusterFromCompleteOutage
 
 mysqlsh gradmin:grpass@localhost:3306 -- cluster status
 ```
-Add instance
+Add instances
 ```
 mysqlsh gradmin:grpass@localhost:3306 -- cluster add-instance gradmin:grpass@localhost:3307 --recoveryMethod=incremental
 
 mysqlsh gradmin:grpass@localhost:3306 -- cluster add-instance gradmin:grpass@localhost:3307 --recoveryMethod=clone
+
+mysqlsh gradmin:grpass@localhost:3306 -- cluster status
 ```
+
 
 
 
