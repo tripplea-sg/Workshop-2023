@@ -1,4 +1,4 @@
-![image](https://github.com/tripplea-sg/Workshop-2023/assets/71237686/c206b2c1-0611-4f86-989a-7fbd4fab40cc)# MySQL High Availability
+# MySQL High Availability
 ## InnoDB Cluster
 Create instance 3308
 ```
@@ -36,3 +36,36 @@ mysqlsh -- dba configure-instance { --host=127.0.0.1 --port=3307 --user=root } -
 mysqlsh -- dba configure-instance { --host=127.0.0.1 --port=3308 --user=root } --clusterAdmin=gradmin --clusterAdminPassword='grpass' --interactive=false --restart=true
 
 ```
+Create InnoDB Cluster
+```
+mysqlsh gradmin:grpass@localhost:3306 -- dba create-cluster mycluster
+```
+Tuning InnoDB Cluster
+```
+mysql -uroot -h::1
+
+set persist group_replication_paxos_single_leader=on;
+set persist_only group_replication_compression_threshold=100;
+set persist group_replication_poll_spin_loops=100;
+
+restart;
+exit
+```
+Start InnoDB Cluster
+```
+mysqlsh gradmin:grpass@localhost:3306 -- dba rebootClusterFromCompleteOutage
+
+mysqlsh gradmin:grpass@localhost:3306 -- cluster status
+```
+Add instance
+```
+mysqlsh gradmin:grpass@localhost:3306 -- cluster add-instance gradmin:grpass@localhost:3307 --recoveryMethod=incremental
+
+mysqlsh gradmin:grpass@localhost:3306 -- cluster add-instance gradmin:grpass@localhost:3307 --recoveryMethod=clone
+```
+
+
+
+
+
+
