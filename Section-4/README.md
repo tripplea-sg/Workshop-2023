@@ -1,4 +1,4 @@
-# MySQL High Availability
+![image](https://github.com/tripplea-sg/Workshop-2023/assets/71237686/c206b2c1-0611-4f86-989a-7fbd4fab40cc)# MySQL High Availability
 ## InnoDB Cluster
 Create instance 3308
 ```
@@ -6,7 +6,7 @@ mysqlsh -e "dba.deploySandboxInstance(3308)"
 
 mysql -uroot -h::1 -P3308
 
-set persist_only innodb_redo_log_capacity=8589934592;
+set persist_only innodb_redo_log_capacity=2147483648;
 set persist_only innodb_flush_neighbors=2;
 set persist_only innodb_io_capacity=3000;
 set persist_only innodb_io_capacity_max=3000;
