@@ -65,6 +65,30 @@ mysqlsh gradmin:grpass@localhost:3306 -- cluster add-instance gradmin:grpass@loc
 
 mysqlsh gradmin:grpass@localhost:3306 -- cluster status
 ```
+Fine Tune instance 3307
+```
+mysql -uroot -h::1 -P3307
+
+set persist group_replication_poll_spin_loops=100;
+set persist_only group_replication_compression_threshold=100;
+
+restart.
+exit;
+```
+Fine Tune instance 3308
+```
+mysql -uroot -h::1 -P3308
+
+set persist group_replication_poll_spin_loops=100;
+set persist_only group_replication_compression_threshold=100;
+
+restart.
+exit;
+```
+Check InnoDB Cluster Status
+```
+mysqlsh gradmin:grpass@localhost:3306 -- cluster status
+```
 
 
 
