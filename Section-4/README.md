@@ -89,6 +89,68 @@ Check InnoDB Cluster Status
 ```
 mysqlsh gradmin:grpass@localhost:3306 -- cluster status
 ```
+## InnoDB ClusterSet
+Create instance 5506
+```
+mysqlsh -e "dba.deploySandboxInstance(5506)"
+
+mysql -uroot -h::1 -P5506
+
+set persist_only innodb_redo_log_capacity=2147483648;
+set persist_only innodb_flush_neighbors=2;
+set persist_only innodb_io_capacity=3000;
+set persist_only innodb_io_capacity_max=3000;
+set persist_only innodb_buffer_pool_size=25769803776;
+set persist_only innodb_buffer_pool_instances=12;
+set persist_only innodb_lru_scan_depth=250;
+set persist_only innodb_page_cleaners=12;
+set persist_only innodb_checksum_algorithm=strict_crc32;
+set persist_only binlog_row_image=MINIMAL;
+
+set persist_only innodb_thread_sleep_delay=500; 
+set persist_only innodb_spin_wait_delay=2;
+set persist_only innodb_spin_wait_pause_multiplier=10;
+
+set persist_only sql_generate_invisible_primary_key=on;
+
+restart;
+
+exit;
+```
+Configure instance
+```
+mysqlsh -- dba configure-instance { --host=127.0.0.1 --port=5506 --user=root } --clusterAdmin=gradmin --clusterAdminPassword='grpass' --interactive=false --restart=true
+```
+Create clusterset and add a replica cluster
+```
+mysqlsh gradmin:grpass@localhost:3306 -- cluster createClusterSet mycs
+
+mysqlsh gradmin:grpass@localhost:3306 -- clusterset status
+
+mysqlsh gradmin:grpass@localhost:3306 -- clusterset createReplicaCluster gradmin:grpass@localhost:5506 myrep --recoveryMethod=clone
+
+mysqlsh gradmin:grpass@localhost:3306 -- clusterset status
+
+mysqlsh gradmin:grpass@localhost:5506 -- cluster status
+```
+Fine Tune Replica Cluster
+```
+mysql -uroot -h::1 -P5506
+
+set persist group_replication_paxos_single_leader=on;
+set persist group_replication_poll_spin_loops=100;
+set persist_only group_replication_compression_threshold=100;
+
+restart;
+exit;
+```
+Start REPLICA cluster 
+```
+mysqlsh gradmin:grpass@localhost:5506 -- dba rebootClusterFromCompleteOutage
+
+mysqlsh gradmin:grpass@localhost:5506 -- cluster status
+```
+
 
 
 
