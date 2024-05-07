@@ -2,7 +2,8 @@
 ## MySQL Server and MySQL Shell Installation
 Extract MySQL Server binary
 ```
-unzip MySQL-server-8.1-01.zip
+cd installer
+unzip MySQL-Server-8.4.0.zip
 ```
 Install MySQL Server
 ```
@@ -10,11 +11,11 @@ sudo yum localinstall -y mysql-commercial-*
 ```
 Extract MySQL Shell
 ```
-unzip MySQL-Shell-8.1.zip
+unzip MySQL-Shell-8.4.0.zip
 ```
 Install MySQL Shell
 ```
-sudo yum localinstall -y mysql-shell-commercial-8.1.0-1.1.el8.x86_64.rpm
+sudo yum localinstall -y mysql-shell-commercial-*.rpm
 ```
 Clean up
 ```
@@ -27,27 +28,52 @@ Edit /etc/fstab using "sudo vi /etc/fstab" and change
 ```
 to
 ```
-/dev/mapper/ocivolume-root /                       xfs     defaults,nodiratime,noatime      0 0
+/dev/mapper/ocivolume-root /                       xfs     defaults,rw,noatime,nodiratime     0 0
 ```
 Reboot the VM.
 ```
 sudo reboot
 ```
-Check vm.swappiness
-```
-cat /proc/sys/vm/swappiness
-```
-Change vm.swappiness to "1" by open sysctl.conf
+Fine tuning Linux Kernel
 ```
 sudo vi /etc/sysctl.conf
-```
-Add the following line, save and exit
-```
+
+
+fs.file-max=3248957
+fs.aio-max-nr=1048576
+net.core.netdev_max_backlog=8000
+net.core.somaxconn=8000
+net.ipv4.tcp_max_syn_backlog=4096
+net.ipv4.ip_local_port_range=9000  65000
+net.netfilter.nf_conntrack_tcp_timeout_time_wait=10
 vm.swappiness=1
+vm.dirty_ratio=10
+vm.dirty_background_ratio=5
+vm.dirty_expire_centisecs=500
+vm.dirty_writeback_centisecs=100
+
+net.core.rmem_default=262144
+net.core.rmem_max=16777216
+net.core.wmem_default=262144
+net.core.wmem_max=16777216
+net.ipv4.tcp_rmem=4096 87380 16777216
+net.ipv4.tcp_wmem=4096 65536 16777216
+net.ipv4.tcp_syn_retries=0
+net.ipv4.tcp_synack_retries=0
+net.ipv4.tcp_keepalive_time=30
+net.ipv4.tcp_keepalive_intvl=1
+net.ipv4.tcp_keepalive_probes=2
+
+kernel.shmmax=30923764531
+kernel.shmall=7549748
+kernel.sem=32000 1024000000 500 32000
+kernel.msgmax=65535
+kernel.msgmnb=65535
+
 ```
-Reboot the VM.
+Apply parameters
 ```
-sudo reboot
+sudo sysctl -p
 ```
 Check IO Scheduler
 ```
