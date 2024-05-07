@@ -28,7 +28,7 @@ Edit /etc/fstab using "sudo vi /etc/fstab" and change
 ```
 to
 ```
-/dev/mapper/ocivolume-root /                       xfs     defaults,rw,noatime,nodiratime     0 0
+/dev/mapper/ocivolume-root /                       xfs     defaults,noatime,nodiratime     0 0
 ```
 Reboot the VM.
 ```
