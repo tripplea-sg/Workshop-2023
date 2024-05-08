@@ -106,6 +106,8 @@ log-bin=/binlog/bin
 ```
 Rebuid MySQL
 ```
+
+sudo systemctl stop mysqld
 sudo su
 rm -Rf /var/lib/mysql/* /redo/* /binlog/*
 ls /var/lib/mysql/
