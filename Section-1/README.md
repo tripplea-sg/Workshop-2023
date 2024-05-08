@@ -19,7 +19,7 @@ sudo yum localinstall -y mysql-shell-commercial-*.rpm
 ```
 Clean up
 ```
-rm $HOME/*.rpm
+rm $HOME/installer/*.rpm
 ```
 ## OS Parameter Tuning
 Edit /etc/fstab using "sudo vi /etc/fstab" and change 
@@ -86,19 +86,42 @@ echo none > /sys/block/sda/queue/scheduler
 exit
 cat /sys/block/sda/queue/scheduler
 ```
-## Setup and Configure Instance 3306
-Create Sandbox Instance 3306
+Disable SELinux
 ```
-sudo systemctl stop mysqld
-sudo systemctl disable mysqld
-mysqlsh -e "dba.deploySandboxInstance(3306)"
+sudo setenforce 0
+```
+## Setup and Configure Instance 3306
+Create directories:
+```
+sudo mkdir /redo /binlog
+sudo chmod ugo+xwr /redo
+sudo chmod ugo+xwr /binlog
+```
+edit my.cnf
+```
+sudo vi /etc/my.cnf
 
-## press enter for empty root password
+innodb_log_group_home_dir=/redo
+log-bin=/binlog/bin
+```
+Rebuid MySQL
+```
+sudo su
+rm -Rf /var/lib/mysql/* /redo/* /binlog/*
+ls /var/lib/mysql/
+exit
 
+sudo systemctl start mysqld
+```
+Check MySQL Temp Password
+```
+sudo cat /var/log/mysqld.log | grep password
 ```
 Configure MySQL Instance 3306
 ```
-mysql -uroot -h::1
+mysql -uroot -h::1 -p
+
+alter user root@'localhost' identified by 'R00t_123';
 
 set persist_only innodb_redo_log_capacity=2147483648;
 set persist_only innodb_flush_neighbors=2;
@@ -117,17 +140,53 @@ set persist_only innodb_spin_wait_pause_multiplier=10;
 
 set persist_only sql_generate_invisible_primary_key=on;
 
+set persist_only innodb_use_fdatasync=on;
+set persist_only innodb_numa_interleave=on;
+
+set persist_only read_buffer_size=131072;
+set persist_only read_rnd_buffer_size=262144;
+set persist_only sort_buffer_size=8388608;
+set persist_only join_buffer_size=16777216;
+set persist_only binlog_cache_size=16777216;
+set persist_only binlog_stmt_cache_size=8192;
+set persist_only thread_stack=1048576;
+set persist_only tmp_table_size=33554432;
+set persist_only net_buffer_length=16384;
+
+set persist_only transaction_isolation='READ-COMMITTED';
+
 restart;
 
 exit;
 ```
-Download and install world_x schema/data
+Install thread pool
 ```
-wget http://downloads.mysql.com/docs/world_x-db.zip
+sudo vi /etc/my.cnf
 
-unzip world_x-db.zip
+plugin-load-add=thread_pool.so
+thread_pool_size=2
+thread_pool_max_transactions_limit=200
+thread_pool_algorithm=1
+thread_pool_query_threads_per_group=100
+thread_pool_dedicated_listeners=ON
 
-mysql -uroot -h::1 < world_x-db/world_x.sql
-
-mysql -uroot -h::1 -e "show databases"
 ```
+Restart instance
+```
+mysql -uroot -h::1 -p"R00t_123" -e "restart"
+```
+Download and install Airport-DB
+```
+cd $HOME/installer
+wget https://downloads.mysql.com/docs/airport-db.tar.gz
+tar -zxvf airport-db.tar.gz
+```
+Install airport-db using MySQL Shell
+```
+
+```
+Repeat using redo log disabled
+```
+mysql -uroot -h::1 -p"R00t_123" -e "alter instance disable innodb redo_log;"
+mysql -uroot -h::1 -p"R00t_123" -e "SHOW GLOBAL STATUS LIKE 'Innodb_redo_log_enabled';"
+``
