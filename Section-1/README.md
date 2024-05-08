@@ -193,7 +193,7 @@ mysql -uroot -h::1 -p"R00t_123" -e "SHOW GLOBAL STATUS LIKE 'Innodb_redo_log_ena
 mysql -uroot -h::1 -p"R00t_123" -e "drop database airportdb"
 
 mysqlsh root@localhost:3306 -- util loadDump 'airport-db' --resetProgress=true
-``
+```
 Repeat using flush log at trx commit disabled
 ```
 mysql -uroot -h::1 -p"R00t_123" -e "alter instance enable innodb redo_log;"
