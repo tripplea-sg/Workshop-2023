@@ -190,4 +190,44 @@ Repeat using redo log disabled
 ```
 mysql -uroot -h::1 -p"R00t_123" -e "alter instance disable innodb redo_log;"
 mysql -uroot -h::1 -p"R00t_123" -e "SHOW GLOBAL STATUS LIKE 'Innodb_redo_log_enabled';"
+mysql -uroot -h::1 -p"R00t_123" -e "drop database airportdb"
+
+mysqlsh root@localhost:3306 -- util loadDump 'airport-db' --resetProgress=true
 ``
+Repeat using flush log at trx commit disabled
+```
+mysql -uroot -h::1 -p"R00t_123" -e "alter instance enable innodb redo_log;"
+mysql -uroot -h::1 -p"R00t_123" -e "SHOW GLOBAL STATUS LIKE 'Innodb_redo_log_enabled';"
+mysql -uroot -h::1 -p"R00t_123" -e "set persist innodb_flush_log_at_trx_commit=0"
+mysql -uroot -h::1 -p"R00t_123" -e "drop database airportdb"
+
+mysqlsh root@localhost:3306 -- util loadDump 'airport-db' --resetProgress=true
+```
+create procedure do while
+```
+mysql -uroot -h::1 -p"R00t_123"
+
+create database test;
+create table test (i int);
+
+DELIMITER // 
+CREATE PROCEDURE doWhile() 
+BEGIN
+  DECLARE i INT DEFAULT 0;
+  WHILE (i <= 5000) DO
+    INSERT INTO test.test values (i);
+    SET i = i+1;
+  END WHILE;
+END;
+//
+DELIMITER ;
+
+call doWhile();
+```
+innodb_flush_log_at_trx_commit to 1
+```
+set persist innodb_flush_log_at_trx_commit=1;
+call doWhile();
+```
+
+
