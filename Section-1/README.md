@@ -183,7 +183,8 @@ tar -zxvf airport-db.tar.gz
 ```
 Install airport-db using MySQL Shell
 ```
-
+mysql -uroot -h::1 -p"R00t_123" -e "set global local_infile=on"
+mysqlsh root@localhost:3306 -- util loadDump 'airport-db'
 ```
 Repeat using redo log disabled
 ```
