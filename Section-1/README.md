@@ -210,6 +210,7 @@ create procedure do while
 mysql -uroot -h::1 -p"R00t_123"
 
 create database test;
+use test;
 create table test (i int);
 
 DELIMITER // 
