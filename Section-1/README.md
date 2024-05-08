@@ -223,9 +223,9 @@ END;
 DELIMITER ;
 
 call doWhile();
-```
+
 innodb_flush_log_at_trx_commit to 1
-```
+
 set persist innodb_flush_log_at_trx_commit=1;
 call doWhile();
 ```
